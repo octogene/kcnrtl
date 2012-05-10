@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/">
+    <file>kcnrtl_icon.svg</file>
+    <file>lexi.css</file>
+  </qresource>
+</RCC>
