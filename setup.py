@@ -7,7 +7,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(name='KCnrtl',
-      version='0.1',
+      version='0.1b',
       description='KDE graphical client for the CNRTL linguistic resources',
       license = "GPLv3", 
       author="Bogdan Cordier",

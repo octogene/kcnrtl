@@ -40,8 +40,7 @@ def main():
 class Main(QMainWindow):
     def __init__(self, parent=None):
         super(QWidget, self).__init__(parent)
-        #QWidget.__init__(self, parent)
-
+        
         self.ui = Ui_MainWindow()
 
         self.ui.setupUi(self)
