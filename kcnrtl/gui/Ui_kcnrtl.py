@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/bogdan/Documents/Programmation/projets/kcnrtl/kcnrtl.ui'
+# Form implementation generated from reading ui file '/gui/kcnrtl.ui'
 #
 # Created: Thu May 10 00:52:48 2012
 #      by: PyQt4 UI code generator 4.9.1

@@ -1,0 +1,23 @@
+======
+KCnrtl
+======
+
+:Author: Bogdan Cordier bcord@hadaly.fr
+:Date: 2012-10-05
+:Copyright: GPLv3
+:Version: 0.1
+
+
+DESCRIPTION
+===========
+
+KCnrtl is a simple KDE graphical client to access the CNRTL linguistic resources.
+It offers the possibility to check the definitions, synomyms, antonyms of a given
+french word.
+
+With the "Clipboard mode" you can easily check for a synonym/antonym
+and replace it in your text. To do so, juste check the "Clipboard mode" checkbox,
+copy in the clipboard any word, KCnrtl will do an automatic request to the CNRTL
+website and you can easily copy any synomym or antonym by just clicking on them.
+Now you just have to paste it back in you text ! 
+ 

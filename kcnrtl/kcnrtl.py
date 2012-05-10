@@ -122,7 +122,7 @@ class Main(QMainWindow):
         self.ui.webView.setHtml(tag.decode('utf8'))
         return tagy
 
-    # Recupere les differentes formes
+    # Check if there is more than one definition
     def lexiForm(self):
         a = re.compile("return sendRequest\(5,'/definition/.*")
         multdef = soup.find_all('a', {'onclick': a})
@@ -130,10 +130,9 @@ class Main(QMainWindow):
         i = 0
         while i < len(multdef):
             multdef_a = multdef[i]
-            # Suppression des chiffres présents dans la chaîne
+            # Delete digits in definition title
             multdef_clean = ''.join(c for c in
                                     multdef_a.text if not c.isdigit())
-            # Ajout de chaque chaîne à la liste tagform
             tagform.append(multdef_clean)
             i += 1
         return tagform
