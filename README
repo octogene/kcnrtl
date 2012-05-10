@@ -8,16 +8,43 @@ KCnrtl
 :Version: 0.1
 
 
-DESCRIPTION
+Description
 ===========
 
-KCnrtl is a simple KDE graphical client to access the CNRTL linguistic resources.
+KCnrtl is a simple KDE graphical client to access the CNRTL french linguistic resources.
 It offers the possibility to check the definitions, synomyms, antonyms of a given
 french word.
 
-With the "Clipboard mode" you can easily check for a synonym/antonym
-and replace it in your text. To do so, juste check the "Clipboard mode" checkbox,
-copy in the clipboard any word, KCnrtl will do an automatic request to the CNRTL
-website and you can easily copy any synomym or antonym by just clicking on them.
-Now you just have to paste it back in you text ! 
+Features:
+---------
+
+    *Check the definitions, synomyms, antonyms of any given french word
+      For now the TLFi (Trésor de la Langue Française) is the only available dictionary.
+
+    *The "AMAZING Clipboard mode" :
+      With the "Clipboard mode" you can easily check for a synonym/antonym and replace it in your text.
+    To do so, just check the "Clipboard mode" checkbox, copy in the clipboard any word, KCnrtl will do
+    an automatic request to the CNRTL website and you can easily copy any synomym or antonym by
+    just clicking on them.
+    Now you just have to paste it back in you text !
+
+Planned features:
+-----------------
+
+    *cli client
+    *access to other dictionary offered by the CNRTL (Dictionnaire de l'Académie française 9e, etc)
+
+Installation
+============
+
+Decompress the archive, you can launch the program by running kcnrtl.sh
+
+TODO
+
+Dependencies
+============
+
+*httplib2
+*BeautifulSoup4
+*PyQT
  
