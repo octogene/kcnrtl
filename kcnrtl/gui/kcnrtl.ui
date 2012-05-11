@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>428</width>
-    <height>605</height>
+    <width>379</width>
+    <height>540</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>KCnrtl</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset resource="../resources/kcnrtl.qrc">
     <normaloff>:/kcnrtl_icon.svg</normaloff>:/kcnrtl_icon.svg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -32,7 +32,7 @@
     <item row="1" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -60,9 +60,16 @@
        <attribute name="title">
         <string>Synonymie</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QListView" name="listView"/>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QComboBox" name="comboBox_3"/>
+          </item>
+          <item>
+           <widget class="QListView" name="listView"/>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -70,9 +77,16 @@
        <attribute name="title">
         <string>Antonymie</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
-         <widget class="QListView" name="listView_2"/>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QComboBox" name="comboBox_4"/>
+          </item>
+          <item>
+           <widget class="QListView" name="listView_2"/>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -102,7 +116,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>428</width>
+     <width>379</width>
      <height>21</height>
     </rect>
    </property>
@@ -117,7 +131,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="kcnrtl.qrc"/>
+  <include location="../resources/kcnrtl.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -52,17 +52,24 @@ class Main(QMainWindow):
         self.ui.comboBox.setCurrentIndex(0)
 
         self.ui.checkBox.setChecked(False)
-
+                
+        self.dictionaries = [u"TLFi",
+                             u"Académie 9e Ed.",
+                             u"Académie 8e Ed.",
+                             u"Académie 4e Ed.",
+                                ]
+        self.ui.comboBox_2.addItems(self.dictionaries)
+        
         self.clipboard = QApplication.clipboard()
 
         self.ui.lineEdit.returnPressed.connect(self.updateUi)
 
-        self.ui.comboBox.activated.connect(self.changeCombo)
+        self.ui.comboBox.activated.connect(self.onComboChange)
         
         self.ui.webView.settings().setUserStyleSheetUrl(
-                                               QUrl.fromLocalFile(":/lexi.css"))
+                                               QUrl.fromLocalFile(':/lexi.css'))
 
-        self.ui.listView.clicked.connect(self.rowClicked)
+        self.ui.listView.clicked.connect(self.onRowClicked)
 
         self.clipboard.dataChanged.connect(self.autoGetFromClipboard)
 
@@ -82,18 +89,27 @@ class Main(QMainWindow):
 
         except:
             self.ui.lineEdit.setText("Veuillez entrer un mot")
+            
+#    # TODO: Dynamically adjust dictionaries name to windows size
+#    def resizeEvent(self, event):
+#        if event.size().width() < 449:
+#            i = 0
+#            while i  <= len(self.ui.comboBox_2):
+#                self.ui.comboBox_2.setItemText(i, self.dictionaries_short[i])
+#            print 'size', event.size().width()
+        
 
     # Copy selected item in list to the clipboard
-    def rowClicked(self, qmodelindex):
-        self.item = qmodelindex.data(Qt.DisplayRole).toString()
-        self.clipboard.setText(self.item)
+    def onRowClicked(self, qmodelindex):
+        item = qmodelindex.data(Qt.DisplayRole).toString()
+        self.clipboard.setText(item)
 
     def autoGetFromClipboard(self):
         if self.ui.checkBox.isChecked():
             self.ui.lineEdit.setText(unicode(self.clipboard.text()))
             self.updateUi()
 
-    def changeCombo(self):
+    def onComboChange(self):
         self.getLexi(self.typed)
         self.lexiContent()
     
@@ -116,10 +132,14 @@ class Main(QMainWindow):
         return soup
 
     def lexiContent(self):
-        tagy = soup.find_all('div', {'id': 'contentbox'})
-        tag = str(tagy[0])
+        tagkeep = soup.find_all('div', {'id': 'contentbox'})
+        if not self.ui.comboBox_2.currentIndex():
+            tagrm = soup.find_all('div', {'class': 'tlf_cvedette'})
+        if 1 <= self.ui.comboBox_2.currentIndex() <= 3:
+            tagrm = soup.find_all('span', {'class': 'tlf_cvedette'})
+        tag = str(tagkeep[0]).replace(str(tagrm[0]),'')
         self.ui.webView.setHtml(tag.decode('utf8'))
-        return tagy
+        return tag
 
     # Check if there is more than one definition
     def lexiForm(self):
@@ -137,11 +157,19 @@ class Main(QMainWindow):
         return tagform
 
     def getHtml(self, text, form):
-        conn = httplib2.Http(".cache")
+        conn = httplib2.Http('.kcnrtl_cache')
         numdef = self.ui.comboBox.currentIndex()
         if form == "definition":
-            htmlSource = conn.request("http://www.cnrtl.fr/%s/%s//%s" %
+            if not self.ui.comboBox_2.currentIndex():
+                htmlSource = conn.request("http://www.cnrtl.fr/%s/%s//%s" %
                                         (form, text, numdef), "GET")
+            if self.ui.comboBox_2.currentIndex() > 0:
+                acad = unicode(self.ui.comboBox_2.currentText())
+                acadnum = filter(lambda x: x.isdigit(), acad)
+                acadnumf = "academie" + str(acadnum)
+                htmlSource = conn.request("http://www.cnrtl.fr/%s/%s/%s//%s" %
+                                          (form, acadnumf, text, numdef), "GET")
+
         else:
             htmlSource = conn.request("http://www.cnrtl.fr/%s/%s" %
                                         (form, text), "GET")
@@ -149,8 +177,8 @@ class Main(QMainWindow):
         
     # Delete cache directory on close
     def closeEvent(self, event):
-        shutil.rmtree('.cache')
-        print "closed"
+        shutil.rmtree('.kcnrtl_cache')
+        
 
 class ListModel(QAbstractListModel):
     def __init__(self, datain, parent=None, *args):

@@ -7,7 +7,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(name='KCnrtl',
-      version='0.1b',
+      version='0.2b',
       description='KDE graphical client for the CNRTL linguistic resources',
       license = "GPLv3", 
       author="Bogdan Cordier",
@@ -15,7 +15,7 @@ setup(name='KCnrtl',
       url="http://code.lm7.fr/p/kcnrtl/",
       download_url="http://code.lm7.fr/p/kcnrtl/downloads/", 
       packages=['kcnrtl', 'kcnrtl.gui',  'kcnrtl.resources'],
-      requires=['httplib2', 'bs4'], 
+      requires=['httplib2', 'beautifulsoup4'],
       long_description=read('README'),
       classifiers=[
         "Development Status :: 4 - Beta",
