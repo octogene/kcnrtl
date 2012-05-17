@@ -8,14 +8,14 @@ def read(fname):
 
 setup(name='KCnrtl',
       version='0.2b',
-      description='KDE graphical client for the CNRTL linguistic resources',
+      description='Qt graphical client for the CNRTL french linguistic resources',
       license = "GPLv3", 
       author="Bogdan Cordier",
       author_email="bcord@hadaly.fr",
       url="http://code.lm7.fr/p/kcnrtl/",
       download_url="http://code.lm7.fr/p/kcnrtl/downloads/", 
       packages=['kcnrtl', 'kcnrtl.gui',  'kcnrtl.resources'],
-      requires=['httplib2', 'beautifulsoup4'],
+      requires=['httplib2', 'beautifulsoup4', 'lxml'],
       long_description=read('README'),
       classifiers=[
         "Development Status :: 4 - Beta",

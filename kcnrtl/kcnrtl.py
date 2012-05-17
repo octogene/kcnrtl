@@ -25,6 +25,8 @@ import httplib2
 from bs4 import BeautifulSoup
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from PyQt4.QtNetwork import *
+from PyQt4.QtWebKit import QWebPage
 from gui.Ui_kcnrtl import Ui_MainWindow
 import re
 import shutil
@@ -52,6 +54,8 @@ class Main(QMainWindow):
         self.ui.comboBox.setCurrentIndex(0)
 
         self.ui.checkBox.setChecked(False)
+
+        self.manager = QNetworkAccessManager()
                 
         self.dictionaries = [u"TLFi",
                              u"Académie 9e Ed.",
@@ -73,22 +77,36 @@ class Main(QMainWindow):
 
         self.clipboard.dataChanged.connect(self.autoGetFromClipboard)
 
-    def updateUi(self):
-        try:
-            # Check if input text is a word
-            if len(unicode(self.ui.lineEdit.text()).split()) <= 1:
-                self.typed = unicode(self.ui.lineEdit.text())
-                self.getLexi(self.typed)
-                self.ui.comboBox.clear()
-                self.ui.comboBox.addItems(self.lexiForm())
-                self.lexiContent()
-                self.ui.listView.setModel(self.getSynoAnto("synonymie"))
-                self.ui.listView_2.setModel(self.getSynoAnto("antonymie"))
-            else:
-                self.ui.lineEdit.setText("Veuillez entrer UN mot")
+        self.manager.finished.connect(self.replyFinished)
 
-        except:
-            self.ui.lineEdit.setText("Veuillez entrer un mot")
+        self.loop = QEventLoop()
+
+        self.manager.finished.connect(self.loop.quit)
+
+        self.tagform = []
+
+    def updateUi(self):
+        # Check if input text is a word
+        if len(unicode(self.ui.lineEdit.text()).split()) <= 1:
+            self.formtype = "definition"
+            self.fetch("Lexi")
+            self.ui.comboBox.clear()
+            self.ui.comboBox.addItems(self.tagform)
+            self.formtype = "synonyme"
+            self.fetch("Syno")
+            self.formtype = "antonyme"
+            self.fetch("Anto")
+#            self.typed = unicode(self.ui.lineEdit.text())
+#            self.getLexi(self.typed)
+#            self.ui.comboBox.clear()
+#            self.ui.comboBox.addItems(self.lexiForm())
+#            self.lexiContent()
+#            self.ui.listView.setModel(self.getSynoAnto("synonymie"))
+#            self.ui.listView_2.setModel(self.getSynoAnto("antonymie"))
+        else:
+            self.ui.lineEdit.setText("Veuillez entrer UN mot")
+
+
             
 #    # TODO: Dynamically adjust dictionaries name to windows size
 #    def resizeEvent(self, event):
@@ -103,81 +121,149 @@ class Main(QMainWindow):
     def onRowClicked(self, qmodelindex):
         item = qmodelindex.data(Qt.DisplayRole).toString()
         self.clipboard.setText(item)
-
+#
     def autoGetFromClipboard(self):
         if self.ui.checkBox.isChecked():
             self.ui.lineEdit.setText(unicode(self.clipboard.text()))
             self.updateUi()
-
+#
     def onComboChange(self):
-        self.getLexi(self.typed)
-        self.lexiContent()
+        self.formtype = "definition"
+        self.fetch("Lexi")
     
-    def getSynoAnto(self, form):
-        tag = []
-        soup = BeautifulSoup(self.getHtml(self.typed, form))
-        tagy = soup.find_all('td', "%s_format" % (form[:4]))
-        i = 0
-        while i < len(tagy):
-            tag_a = tagy[i]
-            tag.append(tag_a.text)
-            i += 1
-        model = ListModel(tag, self)
-        return model
-     
-    def getLexi(self, text):
-        h = self.getHtml(text, "definition")
-        global soup
-        soup = BeautifulSoup(h, "lxml")
-        return soup
+#    def getSynoAnto(self, form):
+#        tag = []
+#        soup = BeautifulSoup(self.getHtml(self.typed, form), "lxml")
+#        tagy = soup.find_all('td', "%s_format" % (form[:4]))
+#        i = 0
+#        while i < len(tagy):
+#            tag_a = tagy[i]
+#            tag.append(tag_a.text)
+#            i += 1
+#        model = ListModel(tag, self)
+#        return model
+#
+#    def getLexi(self, text):
+#        h = self.getHtml(text, "definition")
+#        global soup
+#        soup = BeautifulSoup(h, "lxml")
+#
+#    def lexiContent(self):
+#        tagkeep = soup.find_all('div', {'id': 'contentbox'})
+#        if not self.ui.comboBox_2.currentIndex():
+#            tagrm = soup.find_all('div', {'class': 'tlf_cvedette'})
+#        if 1 <= self.ui.comboBox_2.currentIndex() <= 3:
+#            tagrm = soup.find_all('span', {'class': 'tlf_cvedette'})
+#        tag = str(tagkeep[0]).replace(str(tagrm[0]),'')
+#        self.ui.webView.setHtml(tag.decode('utf8'))
+#        return tag
+#
+#    # Check if there is more than one definition
+#    def lexiForm(self):
+#        a = re.compile("return sendRequest\(5,'/definition/.*")
+#        multdef = soup.find_all('a', {'onclick': a})
+#        tagform = []
+#        i = 0
+#        while i < len(multdef):
+#            multdef_a = multdef[i]
+#            # Delete digits in definition title
+#            multdef_clean = ''.join(c for c in
+#                                    multdef_a.text if not c.isdigit())
+#            tagform.append(multdef_clean)
+#            i += 1
+#        return tagform
+#
+#    def getHtml(self, text, form):
+#        conn = httplib2.Http('.kcnrtl_cache')
+#        numdef = self.ui.comboBox.currentIndex()
+#        if form == "definition":
+#            if not self.ui.comboBox_2.currentIndex():
+#                htmlSource = conn.request("http://www.cnrtl.fr/%s/%s//%s" %
+#                                          (form, text, numdef), "GET")
+#            if self.ui.comboBox_2.currentIndex() > 0:
+#                acad = unicode(self.ui.comboBox_2.currentText())
+#                acadnum = filter(lambda x: x.isdigit(), acad)
+#                acadnumf = "academie" + str(acadnum)
+#                htmlSource = conn.request("http://www.cnrtl.fr/%s/%s/%s//%s" %
+#                                          (form, acadnumf, text, numdef), "GET")
+#
+#        else:
+#            htmlSource = conn.request("http://www.cnrtl.fr/%s/%s" %
+#                                      (form, text), "GET")
+#        return htmlSource[1]
 
-    def lexiContent(self):
-        tagkeep = soup.find_all('div', {'id': 'contentbox'})
-        if not self.ui.comboBox_2.currentIndex():
-            tagrm = soup.find_all('div', {'class': 'tlf_cvedette'})
-        if 1 <= self.ui.comboBox_2.currentIndex() <= 3:
-            tagrm = soup.find_all('span', {'class': 'tlf_cvedette'})
-        tag = str(tagkeep[0]).replace(str(tagrm[0]),'')
-        self.ui.webView.setHtml(tag.decode('utf8'))
-        return tag
 
-    # Check if there is more than one definition
-    def lexiForm(self):
-        a = re.compile("return sendRequest\(5,'/definition/.*")
-        multdef = soup.find_all('a', {'onclick': a})
-        tagform = []
-        i = 0
-        while i < len(multdef):
-            multdef_a = multdef[i]
-            # Delete digits in definition title
-            multdef_clean = ''.join(c for c in
-                                    multdef_a.text if not c.isdigit())
-            tagform.append(multdef_clean)
-            i += 1
-        return tagform
-
-    def getHtml(self, text, form):
-        conn = httplib2.Http('.kcnrtl_cache')
-        numdef = self.ui.comboBox.currentIndex()
-        if form == "definition":
+    def fetch(self, dico):
+        if dico == "Lexi":
             if not self.ui.comboBox_2.currentIndex():
-                htmlSource = conn.request("http://www.cnrtl.fr/%s/%s//%s" %
-                                        (form, text, numdef), "GET")
+                url = ("http://www.cnrtl.fr/definition/%s//%s" %
+                       (self.ui.lineEdit.text(), self.ui.comboBox.currentIndex()))
             if self.ui.comboBox_2.currentIndex() > 0:
                 acad = unicode(self.ui.comboBox_2.currentText())
                 acadnum = filter(lambda x: x.isdigit(), acad)
                 acadnumf = "academie" + str(acadnum)
-                htmlSource = conn.request("http://www.cnrtl.fr/%s/%s/%s//%s" %
-                                          (form, acadnumf, text, numdef), "GET")
+                url = ("http://www.cnrtl.fr/definition/%s/%s//%s" %
+                       (acadnumf, self.ui.lineEdit.text(), self.ui.comboBox.currentIndex()))
+        if dico == "Syno":
+            url = ("http://www.cnrtl.fr/synonymie/%s" %
+                   (self.ui.lineEdit.text()))
+        if dico == "Anto":
+            url = ("http://www.cnrtl.fr/antonymie/%s"  %
+                   (self.ui.lineEdit.text()))
+        self.manager.get(QNetworkRequest(QUrl(url)))
+        self.loop.exec_()
 
-        else:
-            htmlSource = conn.request("http://www.cnrtl.fr/%s/%s" %
-                                        (form, text), "GET")
-        return htmlSource[1]
-        
+    def replyFinished(self, reply):
+        data = reply.readAll()
+        #reply.deleteLater()
+        page = QWebPage()
+        page.mainFrame().setContent(data)
+        webpage = page.mainFrame().documentElement()
+        if self.formtype == "definition":
+            result = webpage.findAll("div#contentbox")
+            if not self.ui.comboBox_2.currentIndex():
+                result_to_remove = webpage.findAll("div.tlf_cvedette")
+            if 1 <= self.ui.comboBox_2.currentIndex() <= 3:
+                result_to_remove = webpage.findAll("span.tlf_cvedette")
+            string_to_remove = result_to_remove.first().toInnerXml()
+            final_page = result.first().toInnerXml()
+            resultf = final_page.replace(string_to_remove, '')
+            self.ui.webView.setHtml(resultf)
+
+            result_box = webpage.findFirst('div#vtoolbar')
+            result_test = result_box.findAll("a[href]")
+            self.tagform = []
+            i = 0
+            while i < len(result_test):
+                multdef_a = unicode(result_test.at(i).toPlainText())
+                # Delete digits in definition title
+                multdef_clean = ''.join(c for c in
+                    multdef_a if not c.isdigit())
+                self.tagform.append(multdef_clean)
+                i += 1
+        if self.formtype == "synonyme":
+            result = webpage.findAll("td.syno_format")
+            tag = []
+            i = 0
+            while i < len(result):
+                tag.append(result.at(i).firstChild().toPlainText())
+                i += 1
+            model = ListModel(tag, self)
+            self.ui.listView.setModel(model)
+            print "3"
+        if self.formtype == "antonyme":
+            result = webpage.findAll("td.anto_format")
+            tag = []
+            i = 0
+            while i < len(result):
+                tag.append(result.at(i).firstChild().toPlainText())
+                i += 1
+            model2 = ListModel(tag, self)
+            self.ui.listView_2.setModel(model2)
+            print "4"
     # Delete cache directory on close
-    def closeEvent(self, event):
-        shutil.rmtree('.kcnrtl_cache')
+#    def closeEvent(self, event):
+#        shutil.rmtree('.kcnrtl_cache')
         
 
 class ListModel(QAbstractListModel):

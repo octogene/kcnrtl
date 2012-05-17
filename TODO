@@ -1,6 +1,7 @@
 TODO
 
 * Show error when word isn't found
+* Switch to Qt backend to remove httplib2 and BeautifulSoup4 dependencies
 * Allow to choose word class for antonyms and synonyms
 * Add some proximity indicator for synonyms and antonyms as on the CNRTL
 * Ajouter un mode de priorité pour les requête en fonction de l'onglet
