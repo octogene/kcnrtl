@@ -93,7 +93,7 @@ class Ui_MainWindow(object):
         self.checkBox.setText(QtGui.QApplication.translate("MainWindow", "Clipboard Mode", None, QtGui.QApplication.UnicodeUTF8))
 
 from PyQt4 import QtWebKit
-import resources.kcnrtl_rc
+from kcnrtl.resources import kcnrtl_rc
 
 if __name__ == "__main__":
     import sys

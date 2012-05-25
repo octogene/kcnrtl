@@ -5,34 +5,34 @@ KCnrtl
 :Author: Bogdan Cordier <bcord@hadaly.fr>
 :Date: 2012-10-05
 :Copyright: GPLv3
-:Version: 0.3b
+:Version: 0.4b
 
 
 Description
 ===========
 
 KCnrtl is a simple Qt graphical client to access the CNRTL french linguistic resources.
-It offers the possibility to check the definitions, synonyms, antonyms of a given
-french word.
 
 Features:
 ---------
 
-    *Check the definitions, synomyms, antonyms of any given french word
-      For now the TLFi (Trésor de la Langue Française) is the only available dictionary.
+    *Check the synomyms, antonyms (CLI & GUI), definitions (GUI only) of any given french word
 
-    *The "AMAZING Clipboard mode" :
+    *Dictionaries available for now:
+        -TLFi (Trésor de la Langue Française informatisé)
+        -Dictionnaire de l'Académie Française 9th, 8th & 4th Edition
+
+    *Clipboard mode (GUI only) :
       With the "Clipboard mode" you can easily check for a synonym/antonym and replace it in your text.
       To do so, just check the "Clipboard mode" checkbox, copy in the clipboard any word, KCnrtl will do
       an automatic request to the CNRTL website and you can easily copy any synonym or antonym by
-      just clicking on them.
+      just clicking on them in the result list.
       Now you just have to paste it back in you text !
 
 Planned features:
 -----------------
 
-    *cli client
-    *access to other dictionary offered by the CNRTL (Dictionnaire de l'Académie française 9e, etc)
+    *access to other dictionaries offered by the CNRTL (Dictionnaire du Moyen Français, etc)
 
 Installation
 ============
@@ -44,6 +44,10 @@ TODO!!
 Requirements
 ============
 
-*Python:2.7
-*PyQT4
+*Python: 2.7
+*PyQt4: >= 4.6
+
+Optional if you don't use command-line:
+*BeautifulSoup4
+*Httplib2
 
