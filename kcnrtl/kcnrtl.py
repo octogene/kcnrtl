@@ -1,35 +1,32 @@
 #!/usr/bin/python
 #-*- coding: utf-8 -*-
-#
-# KCnrtl is a simple and messy KDE graphical client to access
-# the CNRTL linguistic resources
-#
-# Copyright (C) 2012 Bogdan Cordier
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+########################################################################
+# KCnrtl - A simple Qt graphical client to access the CNRTL            #
+# french linguistic resources.                                         #
+#                                                                      #
+# Copyright (C) 2012 Bogdan Cordier                                    #
+#                                                                      #
+# This program is free software: you can redistribute it and/or modify #
+# it under the terms of the GNU General Public License as published by #
+# the Free Software Foundation, either version 3 of the License, or    #
+# (at your option) any later version.                                  #
+#                                                                      #
+# This program is distributed in the hope that it will be useful,      #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of       #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        #
+# GNU General Public License for more details.                         #
+#                                                                      #
+# You should have received a copy of the GNU General Public License    #
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.#
+########################################################################
 
 import sys
-import httplib2
-from bs4 import BeautifulSoup
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtNetwork import *
+from PyQt4.QtCore import QEventLoop, QUrl, QAbstractListModel, QModelIndex, QVariant, Qt
+from PyQt4.QtGui import  QApplication, QMainWindow, QWidget
+from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
 from PyQt4.QtWebKit import QWebPage
 from gui.Ui_kcnrtl import Ui_MainWindow
-import re
-import shutil
 
 
 def main():
@@ -57,10 +54,10 @@ class Main(QMainWindow):
 
         self.manager = QNetworkAccessManager()
                 
-        self.dictionaries = [u"TLFi",
-                             u"Académie 9e Ed.",
-                             u"Académie 8e Ed.",
-                             u"Académie 4e Ed.",
+        self.dictionaries = [str("TLFi").decode("utf-8", "strict"),
+                             str("Académie 9e Ed.").decode("utf-8", "strict"),
+                             str("Académie 8e Ed.").decode("utf-8", "strict"),
+                             str("Académie 4e Ed.").decode("utf-8", "strict"),
                                 ]
         self.ui.comboBox_2.addItems(self.dictionaries)
         
@@ -68,14 +65,14 @@ class Main(QMainWindow):
 
         self.ui.lineEdit.returnPressed.connect(self.updateUi)
 
-        self.ui.comboBox.activated.connect(self.onComboChange)
+        self.ui.comboBox.activated.connect(self.on_combo_change)
         
         self.ui.webView.settings().setUserStyleSheetUrl(
                                                QUrl.fromLocalFile(':/lexi.css'))
 
-        self.ui.listView.clicked.connect(self.onRowClicked)
+        self.ui.listView.clicked.connect(self.on_row_clicked)
 
-        self.clipboard.dataChanged.connect(self.autoGetFromClipboard)
+        self.clipboard.dataChanged.connect(self.get_from_clipboard)
 
         self.manager.finished.connect(self.replyFinished)
 
@@ -96,101 +93,22 @@ class Main(QMainWindow):
             self.fetch("Syno")
             self.formtype = "antonyme"
             self.fetch("Anto")
-#            self.typed = unicode(self.ui.lineEdit.text())
-#            self.getLexi(self.typed)
-#            self.ui.comboBox.clear()
-#            self.ui.comboBox.addItems(self.lexiForm())
-#            self.lexiContent()
-#            self.ui.listView.setModel(self.getSynoAnto("synonymie"))
-#            self.ui.listView_2.setModel(self.getSynoAnto("antonymie"))
         else:
             self.ui.lineEdit.setText("Veuillez entrer UN mot")
 
-
-            
-#    # TODO: Dynamically adjust dictionaries name to windows size
-#    def resizeEvent(self, event):
-#        if event.size().width() < 449:
-#            i = 0
-#            while i  <= len(self.ui.comboBox_2):
-#                self.ui.comboBox_2.setItemText(i, self.dictionaries_short[i])
-#            print 'size', event.size().width()
-        
-
     # Copy selected item in list to the clipboard
-    def onRowClicked(self, qmodelindex):
+    def on_row_clicked(self, qmodelindex):
         item = qmodelindex.data(Qt.DisplayRole).toString()
         self.clipboard.setText(item)
 #
-    def autoGetFromClipboard(self):
+    def get_from_clipboard(self):
         if self.ui.checkBox.isChecked():
             self.ui.lineEdit.setText(unicode(self.clipboard.text()))
             self.updateUi()
 #
-    def onComboChange(self):
+    def on_combo_change(self):
         self.formtype = "definition"
         self.fetch("Lexi")
-    
-#    def getSynoAnto(self, form):
-#        tag = []
-#        soup = BeautifulSoup(self.getHtml(self.typed, form), "lxml")
-#        tagy = soup.find_all('td', "%s_format" % (form[:4]))
-#        i = 0
-#        while i < len(tagy):
-#            tag_a = tagy[i]
-#            tag.append(tag_a.text)
-#            i += 1
-#        model = ListModel(tag, self)
-#        return model
-#
-#    def getLexi(self, text):
-#        h = self.getHtml(text, "definition")
-#        global soup
-#        soup = BeautifulSoup(h, "lxml")
-#
-#    def lexiContent(self):
-#        tagkeep = soup.find_all('div', {'id': 'contentbox'})
-#        if not self.ui.comboBox_2.currentIndex():
-#            tagrm = soup.find_all('div', {'class': 'tlf_cvedette'})
-#        if 1 <= self.ui.comboBox_2.currentIndex() <= 3:
-#            tagrm = soup.find_all('span', {'class': 'tlf_cvedette'})
-#        tag = str(tagkeep[0]).replace(str(tagrm[0]),'')
-#        self.ui.webView.setHtml(tag.decode('utf8'))
-#        return tag
-#
-#    # Check if there is more than one definition
-#    def lexiForm(self):
-#        a = re.compile("return sendRequest\(5,'/definition/.*")
-#        multdef = soup.find_all('a', {'onclick': a})
-#        tagform = []
-#        i = 0
-#        while i < len(multdef):
-#            multdef_a = multdef[i]
-#            # Delete digits in definition title
-#            multdef_clean = ''.join(c for c in
-#                                    multdef_a.text if not c.isdigit())
-#            tagform.append(multdef_clean)
-#            i += 1
-#        return tagform
-#
-#    def getHtml(self, text, form):
-#        conn = httplib2.Http('.kcnrtl_cache')
-#        numdef = self.ui.comboBox.currentIndex()
-#        if form == "definition":
-#            if not self.ui.comboBox_2.currentIndex():
-#                htmlSource = conn.request("http://www.cnrtl.fr/%s/%s//%s" %
-#                                          (form, text, numdef), "GET")
-#            if self.ui.comboBox_2.currentIndex() > 0:
-#                acad = unicode(self.ui.comboBox_2.currentText())
-#                acadnum = filter(lambda x: x.isdigit(), acad)
-#                acadnumf = "academie" + str(acadnum)
-#                htmlSource = conn.request("http://www.cnrtl.fr/%s/%s/%s//%s" %
-#                                          (form, acadnumf, text, numdef), "GET")
-#
-#        else:
-#            htmlSource = conn.request("http://www.cnrtl.fr/%s/%s" %
-#                                      (form, text), "GET")
-#        return htmlSource[1]
 
 
     def fetch(self, dico):
@@ -215,7 +133,6 @@ class Main(QMainWindow):
 
     def replyFinished(self, reply):
         data = reply.readAll()
-        #reply.deleteLater()
         page = QWebPage()
         page.mainFrame().setContent(data)
         webpage = page.mainFrame().documentElement()
@@ -241,30 +158,18 @@ class Main(QMainWindow):
                     multdef_a if not c.isdigit())
                 self.tagform.append(multdef_clean)
                 i += 1
-        if self.formtype == "synonyme":
-            result = webpage.findAll("td.syno_format")
+        if self.formtype == "synonyme" or "antonyme":
+            result = webpage.findAll("td." + self.formtype[:4] + "_format")
             tag = []
             i = 0
             while i < len(result):
                 tag.append(result.at(i).firstChild().toPlainText())
                 i += 1
             model = ListModel(tag, self)
-            self.ui.listView.setModel(model)
-            print "3"
-        if self.formtype == "antonyme":
-            result = webpage.findAll("td.anto_format")
-            tag = []
-            i = 0
-            while i < len(result):
-                tag.append(result.at(i).firstChild().toPlainText())
-                i += 1
-            model2 = ListModel(tag, self)
-            self.ui.listView_2.setModel(model2)
-            print "4"
-    # Delete cache directory on close
-#    def closeEvent(self, event):
-#        shutil.rmtree('.kcnrtl_cache')
-        
+            if self.formtype == "synonyme":
+                self.ui.listView.setModel(model)
+            if self.formtype == "antonyme":
+                self.ui.listView_2.setModel(model)
 
 class ListModel(QAbstractListModel):
     def __init__(self, datain, parent=None, *args):

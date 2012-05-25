@@ -5,13 +5,13 @@ KCnrtl
 :Author: Bogdan Cordier <bcord@hadaly.fr>
 :Date: 2012-10-05
 :Copyright: GPLv3
-:Version: 0.2b
+:Version: 0.3b
 
 
 Description
 ===========
 
-KCnrtl is a simple KDE graphical client to access the CNRTL french linguistic resources.
+KCnrtl is a simple Qt graphical client to access the CNRTL french linguistic resources.
 It offers the possibility to check the definitions, synonyms, antonyms of a given
 french word.
 
@@ -41,10 +41,9 @@ Decompress the archive, you can launch the program by running kcnrtl.sh
 
 TODO!!
 
-Dependencies
+Requirements
 ============
 
-*httplib2
-*BeautifulSoup4
-*PyQT
- 
+*Python:2.7
+*PyQT4
+
