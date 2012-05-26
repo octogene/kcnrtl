@@ -38,16 +38,13 @@ Installation
 ============
 
 Decompress the archive.
-In console :
+In console go to the destination directory:
 
 ::
 
 python setup.py install
 
 Or you can directly launch the program by running kcnrtl.py in the destination directory
-
-
-
 
 Requirements
 ============
