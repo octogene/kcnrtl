@@ -5,7 +5,7 @@ KCnrtl
 :Author: Bogdan Cordier <bcord@hadaly.fr>
 :Date: 2012-26-05
 :Copyright: GPLv3
-:Version: 0.4rc1
+:Version: 0.4rc2
 
 
 Description
@@ -37,7 +37,17 @@ Planned features:
 Installation
 ============
 
-Decompress the archive and launch the program by running kcnrtl.py
+Decompress the archive.
+In console :
+
+::
+
+python setup.py install
+
+Or you can directly launch the program by running kcnrtl.py in the destination directory
+
+
+
 
 Requirements
 ============
