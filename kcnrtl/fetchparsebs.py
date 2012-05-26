@@ -23,16 +23,19 @@
 import httplib2
 from bs4 import BeautifulSoup
 
-def getSynoAnto(text, form):
-    conn = httplib2.Http(".cache")
-    htmlSource = conn.request("http://www.cnrtl.fr/%s/%s" %
-                                  (form, text), "GET")
-    soup = BeautifulSoup(htmlSource[1], "lxml")
-    tagy = soup.find_all('td', "%s_format" % (form[:4]))
+def get_syno_anto(word, wordclass):
+    """
+    Return synonym or antonym of a given word.
+    """
+    conn = httplib2.Http()
+    html_source = conn.request("http://www.cnrtl.fr/%s/%s" %
+                                  (wordclass, word), "GET")
+    soup = BeautifulSoup(html_source[1], "lxml")
+    tagy = soup.find_all('td', "%s_format" % (wordclass[:4]))
     i = 0
     while i < len(tagy):
         tag_a = tagy[i]
         i += 1
-        print tag_a.text
-
+        tag = tag_a.text.encode("utf-8")
+        print tag
 

@@ -8,4 +8,3 @@ include icons/hicolor/16x16/apps/*
 include icons/pixmaps/*
 include COPYING
 include CHANGES
-include kcnrtl.sh

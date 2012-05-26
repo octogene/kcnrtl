@@ -26,7 +26,7 @@ from PyQt4.QtCore import QUrl, Qt
 from PyQt4.QtGui import  QApplication, QMainWindow, QWidget
 from kcnrtl.fetchparseqt import FetchParse
 from kcnrtl.models import ListModel
-from Ui_kcnrtl import Ui_MainWindow
+from kcnrtl.gui.Ui_kcnrtl import Ui_MainWindow
 
 
 def main():
@@ -62,7 +62,7 @@ class Main(QMainWindow):
         
         self.clipboard = QApplication.clipboard()
 
-        self.ui.lineEdit.returnPressed.connect(self.updateUi)
+        self.ui.lineEdit.returnPressed.connect(self.update_ui)
 
         self.ui.comboBox.activated.connect(self.on_combo_change)
         
@@ -75,47 +75,55 @@ class Main(QMainWindow):
 
 
 
-    def updateUi(self):
+    def update_ui(self):
         # Check if input text is a word
+        """
+        Update the ui when a new word is entered.
+        """
         if len(unicode(self.ui.lineEdit.text()).split()) <= 1:
-             wordclass = "definition"
-             dico = "Lexi"
-             lexi = FetchParse(self.ui.lineEdit.text(),dico, self.ui.comboBox.currentIndex(),
-                                self.ui.comboBox_2.currentIndex(), self.ui.comboBox_2.currentText(), wordclass)
-             result_lexi = lexi.reply
-             self.ui.webView.setHtml(result_lexi[0])
-             self.ui.comboBox.clear()
-             self.ui.comboBox.addItems(result_lexi[1])
-             wordclass = "synonyme"
-             dico = "Syno"
-             syno = FetchParse(self.ui.lineEdit.text(),dico, self.ui.comboBox.currentIndex(),
-                                self.ui.comboBox_2.currentIndex(), self.ui.comboBox_2.currentText(), wordclass)
-             model = ListModel(syno.reply, self)
-             self.ui.listView.setModel(model)
-             wordclass = "antonyme"
-             dico = "Anto"
-             anto = FetchParse(self.ui.lineEdit.text(),dico, self.ui.comboBox.currentIndex(),
-                                self.ui.comboBox_2.currentIndex(), self.ui.comboBox_2.currentText(), wordclass)
-             model = ListModel(anto.reply, self)
-             self.ui.listView_2.setModel(model)
+            wordclass = "definition"
+            dico = "Lexi"
+            lexi = FetchParse(self.ui.lineEdit.text(), dico, self.ui.comboBox.currentIndex(),
+                self.ui.comboBox_2.currentIndex(), self.ui.comboBox_2.currentText(), wordclass)
+            result_lexi = lexi.reply
+            self.ui.webView.setHtml(result_lexi[0])
+            self.ui.comboBox.clear()
+            self.ui.comboBox.addItems(result_lexi[1])
+            wordclass = "synonyme"
+            dico = "Syno"
+            syno = FetchParse(self.ui.lineEdit.text(), dico, self.ui.comboBox.currentIndex(),
+                self.ui.comboBox_2.currentIndex(), self.ui.comboBox_2.currentText(), wordclass)
+            model = ListModel(syno.reply, self)
+            self.ui.listView.setModel(model)
+            wordclass = "antonyme"
+            dico = "Anto"
+            anto = FetchParse(self.ui.lineEdit.text(), dico, self.ui.comboBox.currentIndex(),
+                self.ui.comboBox_2.currentIndex(), self.ui.comboBox_2.currentText(), wordclass)
+            model = ListModel(anto.reply, self)
+            self.ui.listView_2.setModel(model)
 
         else:
             self.ui.lineEdit.setText("Veuillez entrer UN mot")
 
-    # Copy selected item in list to the clipboard
     def on_row_clicked(self, qmodelindex):
+        """
+        Copy selected item in list to the clipboard.
+        """
         item = qmodelindex.data(Qt.DisplayRole).toString()
         self.clipboard.setText(item)
 #
     def get_from_clipboard(self):
+        """
+        Pass clipboard content as a new word and update ui.
+        """
         if self.ui.checkBox.isChecked():
             self.ui.lineEdit.setText(unicode(self.clipboard.text()))
-            self.updateUi()
+            self.update_ui()
 #
     def on_combo_change(self):
         wordclass = "definition"
         dico = "Lexi"
-        lexi = FetchParse(self.ui.lineEdit.text(),dico, self.ui.comboBox.currentIndex(),
+        lexi = FetchParse(self.ui.lineEdit.text(), dico, self.ui.comboBox.currentIndex(),
             self.ui.comboBox_2.currentIndex(), self.ui.comboBox_2.currentText(), wordclass)
         result_lexi = lexi.reply
         self.ui.webView.setHtml(result_lexi[0])

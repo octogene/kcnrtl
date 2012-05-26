@@ -26,7 +26,7 @@ from PyQt4.QtWebKit import QWebPage
 from PyQt4.QtCore import QEventLoop, QUrl
 
 
-class FetchParse:
+class FetchParse(object):
     def __init__(self, word, dico, combo1_index, combo2_index, combo2_text, wordclass):
         self.word = word
         self.dico = dico
@@ -35,7 +35,7 @@ class FetchParse:
         self.combo2_text = combo2_text
         self.wordclass = wordclass
         self.manager = QNetworkAccessManager()
-        self.manager.finished.connect(self.replyFinished)
+        self.manager.finished.connect(self.reply_finished)
         self.loop = QEventLoop()
         self.manager.finished.connect(self.loop.quit)
         self._reply = ""
@@ -66,7 +66,7 @@ class FetchParse:
         self.manager.get(QNetworkRequest(QUrl(url)))
         self.loop.exec_()
 
-    def replyFinished(self, datareply):
+    def reply_finished(self, datareply):
         data = datareply.readAll()
         page = QWebPage()
         page.mainFrame().setContent(data)

@@ -44,14 +44,14 @@ def main():
         wordset = args.word
 
     if len(sys.argv) < 2:
-        from gui.gui import main
-        exit(main())
+        from kcnrtl.gui.gui import main as _main
+        sys.exit(_main())
     else:
-        from fetchparsebs import getSynoAnto
+        from kcnrtl.fetchparsebs import get_syno_anto
         if args.synonym:
-            getSynoAnto(wordset, "synonymie")
+            get_syno_anto(wordset, "synonymie")
         if args.antonym:
-            getSynoAnto(wordset, "antonymie")
+            get_syno_anto(wordset, "antonymie")
 
 if __name__ == '__main__':
     main()

@@ -3,9 +3,9 @@ KCnrtl
 ======
 
 :Author: Bogdan Cordier <bcord@hadaly.fr>
-:Date: 2012-10-05
+:Date: 2012-26-05
 :Copyright: GPLv3
-:Version: 0.4b
+:Version: 0.4rc1
 
 
 Description
@@ -37,17 +37,14 @@ Planned features:
 Installation
 ============
 
-Decompress the archive, you can launch the program by running kcnrtl.sh
-
-TODO!!
+Decompress the archive and launch the program by running kcnrtl.py
 
 Requirements
 ============
 
 *Python: 2.7
 *PyQt4: >= 4.6
-
-Optional if you don't use command-line:
-*BeautifulSoup4
-*Httplib2
+*beautifulsoup4
+*httplib2
+*lxml
 

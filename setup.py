@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
 import os
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(name='KCnrtl',
-      version='0.4b',
+      version='0.4rc1',
       description='Qt graphical client for the CNRTL french linguistic resources',
       license = "GPLv3", 
       author="Bogdan Cordier",
       author_email="bcord@hadaly.fr",
       url="http://code.lm7.fr/p/kcnrtl/",
       download_url="http://code.lm7.fr/p/kcnrtl/downloads/", 
-      packages=['kcnrtl'],
-      requires=['BeautifulSoup4','httplib2'],
+      packages=find_packages(),
+      requires=['beautifulsoup4', 'httplib2', 'lxml'],
       long_description=read('README'),
       classifiers=[
         "Development Status :: 4 - Beta",

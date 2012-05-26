@@ -1,13 +1,9 @@
 TODO
 
 * Show error when word isn't found
-* Switch to Qt backend to remove httplib2 and BeautifulSoup4 dependencies
 * Allow to choose word class for antonyms and synonyms
 * Add some proximity indicator for synonyms and antonyms as on the CNRTL
-* Ajouter un mode de priorité pour les requête en fonction de l'onglet
 * Allow to disable automatic copy when item in list is clicked
 * Better css stylesheet for definitions
-* Add command-line mode
 * Add other dictionaries
-* Save entries in file to save web request
 * Maybe add foreign resources
